@@ -66,8 +66,6 @@ cbite/
 └── requirements.txt ← Python dependencies (3 packages)
 ```
 
-> `index.html` lives in the same folder as `app.py` — no separate templates folder needed.
-
 ---
 
 ## Database Design (MongoDB — 3 Collections)
@@ -218,8 +216,6 @@ To log in, click **"Staff / Admin Login"** in the top-right corner, select your 
 | Snacks    | Masala Dosa, Idli, Samosa, Veg Puff              |
 | Beverages | Masala Chai, Cold Coffee, Lassi, Fresh Lime Soda |
 | Desserts  | Gulab Jamun, Ice Cream Cup                       |
-
-> Fresh Lime Soda is seeded as unavailable by default to demonstrate the hidden/unavailable feature.
 
 ---
 
