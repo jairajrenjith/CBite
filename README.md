@@ -55,8 +55,6 @@ cbite/
 └── requirements.txt
 ```
 
-> Note: `index.html` lives in the same folder as `app.py` — no separate templates folder needed.
-
 ---
 
 ## Database Design (MongoDB)
