@@ -259,4 +259,6 @@ db["queue"].create_index([("token_number", ASCENDING)], unique=True)
 
 ## License
 
-Built for educational purposes as a college mini project.
+Built for educational purposes as a college miniproject.
+
+By Jairaj R.
