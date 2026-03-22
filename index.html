@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>CBite – Campus Bite</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg width='34' height='34' viewBox='0 0 34 34' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='34' height='34' rx='8' fill='%23C8410B'/%3E%3Cpath d='M10 24V14C10 11.79 11.79 10 14 10H20C22.21 10 24 11.79 24 14V24' stroke='white' stroke-width='1.8' stroke-linecap='round'/%3E%3Cpath d='M7 24H27' stroke='white' stroke-width='1.8' stroke-linecap='round'/%3E%3Cpath d='M14 10V8' stroke='white' stroke-width='1.8' stroke-linecap='round'/%3E%3Cpath d='M17 10V7' stroke='white' stroke-width='1.8' stroke-linecap='round'/%3E%3Cpath d='M20 10V8' stroke='white' stroke-width='1.8' stroke-linecap='round'/%3E%3Cpath d='M13 17H21' stroke='white' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M13 20H21' stroke='white' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#FAFAF8;--surface:#FFFFFF;--card:#FFFFFF;
+  --ink:#111110;--ink2:#3D3D3A;--muted:#888884;
+  --border:#E8E8E4;--border2:#D4D4CE;
+  --accent:#C8410B;--accent-hover:#A63409;--accent-light:#FFF3EE;
+  --green:#1A7A3F;--green-bg:#EDF7F1;
+  --yellow:#8A6700;--yellow-bg:#FFF9E6;
+  --blue:#1A5CA8;--blue-bg:#EEF4FF;
+  --red:#B91C1C;--red-bg:#FFF1F1;
+  --shadow:0 1px 4px rgba(0,0,0,.07),0 4px 16px rgba(0,0,0,.06);
+  --shadow-lg:0 8px 32px rgba(0,0,0,.12);
+  --radius:10px;--radius-lg:16px;
+  --font-display:'Playfair Display',serif;
+  --font-body:'Outfit',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-body);background:var(--bg);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
+
+.topbar{background:var(--accent);color:#fff;text-align:center;font-size:.78rem;font-weight:500;padding:7px 16px;letter-spacing:.3px}
+
+header{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:200;box-shadow:0 1px 0 var(--border)}
+.nav-inner{max-width:1200px;margin:0 auto;padding:0 24px;height:64px;display:flex;align-items:center;gap:32px}
+.logo-wrap{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink)}
+.logo-wrap svg{flex-shrink:0}
+.logo-text{font-family:var(--font-display);font-size:1.35rem;font-weight:700;color:var(--ink)}
+.logo-text span{color:var(--accent)}
+.nav-tabs{display:flex;gap:2px;margin-left:auto}
+.tab{padding:8px 18px;border-radius:8px;cursor:pointer;font-size:.88rem;font-weight:500;color:var(--ink2);transition:all .18s;border:none;background:none;font-family:var(--font-body)}
+.tab:hover{background:#F2F2EF;color:var(--ink)}
+.tab.active{background:var(--accent-light);color:var(--accent);font-weight:600}
+.nav-actions{display:flex;gap:8px;align-items:center;margin-left:16px}
+.btn-login{padding:8px 18px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:1.5px solid var(--border2);background:transparent;color:var(--ink2);font-family:var(--font-body);transition:all .18s}
+.btn-login:hover,.btn-login.active-admin{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn-cart{padding:8px 18px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;background:var(--accent);color:#fff;font-family:var(--font-body);transition:background .18s;display:none;align-items:center;gap:8px}
+.btn-cart:hover{background:var(--accent-hover)}
+.cart-badge{background:#fff;color:var(--accent);border-radius:20px;padding:0 7px;font-size:.78rem;font-weight:700}
+
+main{max-width:1200px;margin:0 auto;padding:36px 24px}
+.page{display:none}.page.active{display:block}
+
+.hero{background:linear-gradient(120deg,#1A0E09 60%,#3B1208 100%);border-radius:20px;padding:56px 64px;display:flex;align-items:center;justify-content:space-between;gap:40px;margin-bottom:48px;overflow:hidden;position:relative}
+.hero::before{content:'';position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1200&q=80') center/cover;opacity:.18}
+.hero-content{position:relative;z-index:1;max-width:520px}
+.hero-eyebrow{display:inline-block;background:rgba(200,65,11,.25);border:1px solid rgba(200,65,11,.4);color:#FFBFA0;font-size:.78rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:5px 14px;border-radius:20px;margin-bottom:20px}
+.hero h1{font-family:var(--font-display);font-size:2.8rem;font-weight:800;color:#fff;line-height:1.15;margin-bottom:16px}
+.hero h1 span{color:#FF7A45}
+.hero p{color:#C8BDB8;font-size:1rem;margin-bottom:32px;max-width:420px;line-height:1.7}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+.btn-hero-primary{padding:13px 28px;border-radius:10px;font-size:.95rem;font-weight:600;cursor:pointer;border:none;background:var(--accent);color:#fff;font-family:var(--font-body);transition:all .2s}
+.btn-hero-primary:hover{background:#E04D10;transform:translateY(-1px)}
+.btn-hero-outline{padding:13px 28px;border-radius:10px;font-size:.95rem;font-weight:600;cursor:pointer;border:1.5px solid rgba(255,255,255,.25);background:transparent;color:#fff;font-family:var(--font-body);transition:all .2s}
+.btn-hero-outline:hover{border-color:rgba(255,255,255,.5)}
+.hero-image{position:relative;z-index:1;flex-shrink:0}
+.hero-image img{width:280px;height:280px;object-fit:cover;border-radius:16px;border:3px solid rgba(255,255,255,.12);box-shadow:0 24px 64px rgba(0,0,0,.5)}
+
+.stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:48px}
+.stat{background:var(--surface);padding:20px 24px;text-align:center}
+.stat-val{font-family:var(--font-display);font-size:1.6rem;font-weight:700;color:var(--accent);margin-bottom:2px}
+.stat-lbl{font-size:.78rem;color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:.5px}
+
+.sec-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:24px}
+.sec-title{font-family:var(--font-display);font-size:1.6rem;font-weight:700}
+.sec-sub{font-size:.85rem;color:var(--muted);margin-top:2px}
+
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px}
+.filter-btn{padding:8px 18px;border-radius:20px;font-size:.83rem;font-weight:500;cursor:pointer;border:1.5px solid var(--border2);background:transparent;color:var(--ink2);transition:all .18s;font-family:var(--font-body)}
+.filter-btn:hover{border-color:var(--accent);color:var(--accent)}
+.filter-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+.menu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px}
+.menu-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;transition:box-shadow .2s,transform .2s;display:flex;flex-direction:column}
+.menu-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-3px)}
+.menu-card-img{width:100%;height:168px;object-fit:cover;background:#F0EFE8}
+.menu-card-img.fallback{display:flex;align-items:center;justify-content:center;background:#F5F4EF}
+.menu-card-body{padding:18px 18px 20px;flex:1;display:flex;flex-direction:column}
+.menu-card-cat{font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:6px}
+.menu-card-name{font-family:var(--font-display);font-size:1.05rem;font-weight:700;margin-bottom:10px;line-height:1.3}
+.menu-card-footer{margin-top:auto;display:flex;align-items:center;justify-content:space-between}
+.menu-card-price{font-size:1.15rem;font-weight:700;color:var(--ink)}
+.menu-card-price span{font-size:.75rem;font-weight:500;color:var(--muted)}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.72rem;font-weight:600;letter-spacing:.2px}
+.badge-avail{background:var(--green-bg);color:var(--green)}
+.badge-unavail{background:var(--red-bg);color:var(--red)}
+.badge-pending{background:var(--yellow-bg);color:var(--yellow)}
+.badge-preparing{background:var(--blue-bg);color:var(--blue)}
+.badge-ready{background:var(--green-bg);color:var(--green)}
+
+.qty-ctrl{display:flex;align-items:center;gap:6px}
+.qty-btn{width:30px;height:30px;border-radius:7px;border:1.5px solid var(--border2);background:var(--bg);color:var(--ink);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;font-family:var(--font-body)}
+.qty-btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn-add{padding:7px 16px;border-radius:8px;font-size:.83rem;font-weight:600;cursor:pointer;border:none;background:var(--accent);color:#fff;font-family:var(--font-body);transition:background .15s}
+.btn-add:hover{background:var(--accent-hover)}
+
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 20px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .15s;font-family:var(--font-body)}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:var(--accent-hover)}
+.btn-outline{background:transparent;border:1.5px solid var(--border2);color:var(--ink2)}.btn-outline:hover{border-color:var(--ink2)}
+.btn-danger{background:var(--red-bg);color:var(--red);border:1.5px solid #FED7D7}.btn-danger:hover{background:#FEE2E2}
+.btn-success{background:var(--green-bg);color:var(--green);border:1.5px solid #BBF7D0}.btn-success:hover{background:#D1FAE5}
+.btn-sm{padding:6px 13px;font-size:.78rem}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;margin-bottom:24px;box-shadow:var(--shadow)}
+.panel-title{font-family:var(--font-display);font-size:1.1rem;font-weight:700;margin-bottom:20px;color:var(--ink)}
+.form-group{margin-bottom:16px}
+label{display:block;font-size:.8rem;font-weight:600;color:var(--ink2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.3px}
+input,select{width:100%;padding:10px 14px;background:var(--bg);border:1.5px solid var(--border2);border-radius:8px;color:var(--ink);font-size:.9rem;font-family:var(--font-body);outline:none;transition:border-color .2s}
+input:focus,select:focus{border-color:var(--accent)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.86rem}
+th{text-align:left;padding:11px 14px;background:#F7F7F4;color:var(--muted);font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.5px;border-bottom:1.5px solid var(--border)}
+td{padding:13px 14px;border-bottom:1px solid var(--border);vertical-align:middle;color:var(--ink2)}
+tr:last-child td{border-bottom:none}
+.action-row{display:flex;gap:6px}
+
+.order-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:22px;margin-bottom:14px;box-shadow:var(--shadow);transition:box-shadow .2s}
+.order-card:hover{box-shadow:var(--shadow-lg)}
+.order-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.token-num{font-family:var(--font-display);font-size:1.1rem;font-weight:700}
+.order-items-list{font-size:.84rem;color:var(--muted);margin-bottom:12px;line-height:1.7}
+.order-card-bottom{display:flex;align-items:center;justify-content:space-between}
+.order-total{font-size:1.1rem;font-weight:700;color:var(--ink)}
+
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;align-items:center;justify-content:center;backdrop-filter:blur(2px)}
+.overlay.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:36px;width:min(500px,95vw);max-height:88vh;overflow-y:auto;box-shadow:var(--shadow-lg)}
+.modal-title{font-family:var(--font-display);font-size:1.25rem;font-weight:700;margin-bottom:22px}
+.modal-actions{display:flex;gap:10px;margin-top:24px;justify-content:flex-end}
+
+.cart-line{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border)}
+.cart-line:last-of-type{border-bottom:none}
+.cart-item-name{font-weight:600;font-size:.9rem}
+.cart-item-sub{font-size:.78rem;color:var(--muted);margin-top:2px}
+.cart-total-row{display:flex;justify-content:space-between;font-family:var(--font-display);font-size:1.15rem;font-weight:700;padding-top:14px;border-top:1.5px solid var(--border);margin-top:6px}
+
+.toast{position:fixed;bottom:28px;right:28px;padding:13px 22px;border-radius:10px;font-size:.86rem;font-weight:500;z-index:999;transform:translateY(110px);opacity:0;transition:all .3s;max-width:340px;box-shadow:var(--shadow-lg);border:1px solid transparent}
+.toast.show{transform:translateY(0);opacity:1}
+.toast-success{background:var(--green-bg);color:var(--green);border-color:#BBF7D0}
+.toast-error{background:var(--red-bg);color:var(--red);border-color:#FED7D7}
+.toast-info{background:var(--blue-bg);color:var(--blue);border-color:#BFDBFE}
+
+.confirm-icon{width:64px;height:64px;border-radius:50%;background:var(--green-bg);display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.token-display{font-family:var(--font-display);font-size:4rem;font-weight:800;color:var(--accent);line-height:1;text-align:center;margin:8px 0}
+
+.empty{text-align:center;padding:72px 20px;color:var(--muted)}
+.empty-icon{margin:0 auto 16px}
+.empty h3{font-family:var(--font-display);font-size:1.1rem;color:var(--ink2);margin-bottom:6px}
+
+.admin-chip{display:inline-flex;align-items:center;gap:6px;background:var(--accent-light);color:var(--accent);border:1px solid rgba(200,65,11,.2);border-radius:20px;padding:4px 12px;font-size:.78rem;font-weight:600}
+.staff-chip{display:inline-flex;align-items:center;gap:6px;background:var(--blue-bg);color:var(--blue);border:1px solid rgba(26,92,168,.2);border-radius:20px;padding:4px 12px;font-size:.78rem;font-weight:600}
+.btn-login.active-role{background:var(--accent);color:#fff;border-color:var(--accent)}
+.staff-chip{display:inline-flex;align-items:center;gap:6px;background:var(--blue-bg);color:var(--blue);border:1px solid rgba(26,92,168,.2);border-radius:20px;padding:4px 12px;font-size:.78rem;font-weight:600}
+.btn-login.active-staff{background:var(--blue);color:#fff;border-color:var(--blue)}
+
+.skeleton{background:linear-gradient(90deg,#F0EFE8 25%,#E8E7E0 50%,#F0EFE8 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:8px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+footer{background:var(--ink);color:#9CA3AF;text-align:center;padding:28px 24px;font-size:.82rem;margin-top:64px}
+footer .footer-logo{font-family:var(--font-display);font-size:1.1rem;color:#fff;margin-bottom:6px}
+
+@media(max-width:720px){
+  .hero{padding:36px 28px;flex-direction:column}
+  .hero-image{display:none}
+  .hero h1{font-size:2rem}
+  .stats-bar{grid-template-columns:1fr 1fr}
+  .form-row{grid-template-columns:1fr}
+  .nav-inner{gap:12px}
+  .tab{padding:7px 10px;font-size:.8rem}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav-inner">
+    
+    <a class="logo-wrap" href="#">
+      <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="34" height="34" rx="8" fill="#C8410B"/>
+        <path d="M10 24V14C10 11.79 11.79 10 14 10H20C22.21 10 24 11.79 24 14V24" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M7 24H27" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M14 10V8" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M17 10V7" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M20 10V8" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M13 17H21" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M13 20H21" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <span class="logo-text">C<span>Bite</span></span>
+    </a>
+
+    <div class="nav-tabs">
+      <button class="tab active" onclick="showPage('pg-home',this)">Home</button>
+      <button class="tab" onclick="showPage('pg-menu',this)">Menu</button>
+      <button class="tab" onclick="showPage('pg-orders',this)">My Orders</button>
+      <button class="tab admin-only" id="tab-admin" style="display:none" onclick="showPage('pg-admin',this)">Admin</button>
+      <button class="tab" id="tab-staff" style="display:none" onclick="showPage('pg-staff',this)">Staff</button>
+    </div>
+
+    <div class="nav-actions">
+      <div id="admin-chip" class="admin-chip" style="display:none">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M6 3.5V6.5L7.5 8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        Admin
+      </div>
+      <div id="staff-chip" class="staff-chip" style="display:none">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1C4.34 1 3 2.34 3 4C3 5.66 4.34 7 6 7C7.66 7 9 5.66 9 4C9 2.34 7.66 1 6 1Z" stroke="currentColor" stroke-width="1.3"/><path d="M1 11C1 8.79 3.24 7 6 7C8.76 7 11 8.79 11 11" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        Staff
+      </div>
+      <button class="btn-login" id="portal-btn" onclick="openPortalLogin()">Staff / Admin Login</button>
+      <button class="btn-cart" id="cart-btn" onclick="openCart()">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M1 1H3L4.68 9.39C4.77 9.83 5.16 10.15 5.61 10.15H12.39C12.84 10.15 13.23 9.83 13.32 9.39L14.72 3.15H3.5" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="6" cy="13" r="1" fill="white"/><circle cx="12" cy="13" r="1" fill="white"/></svg>
+        Cart <span class="cart-badge" id="cart-badge">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="toast" id="toast"></div>
+
+<main>
+
+<div class="page active" id="pg-home">
+  <div class="hero">
+    <div class="hero-content">
+      <span class="hero-eyebrow">Your College Canteen, Digitized</span>
+      <h1>Fresh Food.<br/><span>Fast Orders.</span><br/>Zero Waiting.</h1>
+      <p>Browse today's menu, place your order in seconds, and track it live — all from one place. No queues, no confusion.</p>
+      <div class="hero-actions">
+        <button class="btn-hero-primary" onclick="showPage('pg-menu',document.querySelectorAll('.tab')[1])">View Today's Menu</button>
+        <button class="btn-hero-outline" onclick="showPage('pg-orders',document.querySelectorAll('.tab')[2])">Track My Order</button>
+      </div>
+    </div>
+    <div class="hero-image">
+      <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=560&q=85" alt="Canteen food spread" loading="lazy"/>
+    </div>
+  </div>
+
+  <div class="stats-bar" id="stats-bar">
+    <div class="stat"><div class="stat-val" id="s-items">–</div><div class="stat-lbl">Menu Items</div></div>
+    <div class="stat"><div class="stat-val" id="s-cats">–</div><div class="stat-lbl">Categories</div></div>
+    <div class="stat"><div class="stat-val" id="s-orders">–</div><div class="stat-lbl">Orders Today</div></div>
+    <div class="stat"><div class="stat-val" id="s-avail">–</div><div class="stat-lbl">Items Available</div></div>
+  </div>
+
+  <div class="sec-header">
+    <div>
+      <div class="sec-title">Featured Items</div>
+      <div class="sec-sub">Handpicked from today's menu</div>
+    </div>
+    <button class="btn btn-outline" onclick="showPage('pg-menu',document.querySelectorAll('.tab')[1])">View All</button>
+  </div>
+  <div class="menu-grid" id="featured-grid">
+    <div class="skeleton" style="height:280px;border-radius:16px"></div>
+    <div class="skeleton" style="height:280px;border-radius:16px"></div>
+    <div class="skeleton" style="height:280px;border-radius:16px"></div>
+    <div class="skeleton" style="height:280px;border-radius:16px"></div>
+  </div>
+</div>
+
+<div class="page" id="pg-menu">
+  <div class="sec-header">
+    <div>
+      <div class="sec-title">Today's Menu</div>
+      <div class="sec-sub">All prices inclusive of taxes</div>
+    </div>
+  </div>
+  <div class="filters" id="cat-filters">
+    <button class="filter-btn active" onclick="filterCat('all',this)">All Items</button>
+  </div>
+  <div class="menu-grid" id="menu-grid">
+    <div class="skeleton" style="height:280px;border-radius:16px"></div>
+    <div class="skeleton" style="height:280px;border-radius:16px"></div>
+    <div class="skeleton" style="height:280px;border-radius:16px"></div>
+  </div>
+</div>
+
+<div class="page" id="pg-orders">
+  <div class="sec-header">
+    <div>
+      <div class="sec-title">Order Status</div>
+      <div class="sec-sub">Live updates — refresh to check latest</div>
+    </div>
+    <button class="btn btn-outline" onclick="loadOrders()">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 7C1 3.69 3.69 1 7 1C9.32 1 11.33 2.3 12.36 4.22" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M13 7C13 10.31 10.31 13 7 13C4.68 13 2.67 11.7 1.64 9.78" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M11 1L13 4.5L9.5 4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Refresh
+    </button>
+  </div>
+  <div class="filters">
+    <button class="filter-btn active" onclick="filterOrders('all',this)">All</button>
+    <button class="filter-btn" onclick="filterOrders('pending',this)">Pending</button>
+    <button class="filter-btn" onclick="filterOrders('preparing',this)">Preparing</button>
+    <button class="filter-btn" onclick="filterOrders('ready',this)">Ready for Pickup</button>
+  </div>
+  <div id="orders-list"><div class="skeleton" style="height:120px;border-radius:16px;margin-bottom:14px"></div></div>
+</div>
+
+<div class="page" id="pg-admin">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:28px">
+    <div class="sec-title">Admin Panel</div>
+    <div class="admin-chip">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1L7.5 4.5H11L8.25 6.75L9.25 10.5L6 8.25L2.75 10.5L3.75 6.75L1 4.5H4.5L6 1Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+      Staff Access
+    </div>
+    <button class="btn btn-outline btn-sm" style="margin-left:auto" onclick="portalLogout()">Logout</button>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Add New Menu Item</div>
+    <div class="form-row">
+      <div class="form-group"><label>Item Name</label><input id="a-name" placeholder="e.g. Veg Biryani"/></div>
+      <div class="form-group"><label>Category</label><select id="a-cat"><option>Meals</option><option>Snacks</option><option>Beverages</option><option>Desserts</option><option>Other</option></select></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Price (Rs.)</label><input id="a-price" type="number" min="0" step="0.5" placeholder="0.00"/></div>
+      <div class="form-group"><label>Image URL (optional)</label><input id="a-img" placeholder="https://..."/></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Available</label><select id="a-avail"><option value="true">Yes</option><option value="false">No</option></select></div>
+      <div></div>
+    </div>
+    <button class="btn btn-primary" onclick="addItem()">Add to Menu</button>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Menu Items</div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Item</th><th>Category</th><th>Price</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody id="admin-menu-body"></tbody>
+    </table></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">All Orders</div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Token</th><th>Items</th><th>Total</th><th>Status</th><th>Action</th></tr></thead>
+      <tbody id="admin-orders-body"></tbody>
+    </table></div>
+  </div>
+</div>
+
+<div class="page" id="pg-staff">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:28px">
+    <div class="sec-title">Counter Staff Panel</div>
+    <div class="staff-chip">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1C4.34 1 3 2.34 3 4C3 5.66 4.34 7 6 7C7.66 7 9 5.66 9 4C9 2.34 7.66 1 6 1Z" stroke="currentColor" stroke-width="1.3"/><path d="M1 11C1 8.79 3.24 7 6 7C8.76 7 11 8.79 11 11" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+      Counter Access
+    </div>
+    <button class="btn btn-outline btn-sm" style="margin-left:auto" onclick="portalLogout()">Logout</button>
+  </div>
+
+  <div class="stats-bar" style="margin-bottom:28px">
+    <div class="stat"><div class="stat-val" id="st-pending">–</div><div class="stat-lbl">Pending</div></div>
+    <div class="stat"><div class="stat-val" id="st-preparing">–</div><div class="stat-lbl">Preparing</div></div>
+    <div class="stat"><div class="stat-val" id="st-ready">–</div><div class="stat-lbl">Ready</div></div>
+    <div class="stat"><div class="stat-val" id="st-total">–</div><div class="stat-lbl">Total Orders</div></div>
+  </div>
+
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+    <div>
+      <div style="font-family:var(--font-display);font-size:1.1rem;font-weight:700">Live Order Queue</div>
+      <div style="font-size:.82rem;color:var(--muted);margin-top:2px">Update order status as you prepare and serve</div>
+    </div>
+    <button class="btn btn-outline" onclick="loadStaffOrders()">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 7C1 3.69 3.69 1 7 1C9.32 1 11.33 2.3 12.36 4.22" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M13 7C13 10.31 10.31 13 7 13C4.68 13 2.67 11.7 1.64 9.78" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M11 1L13 4.5L9.5 4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Refresh
+    </button>
+  </div>
+
+  <div class="filters" style="margin-bottom:20px">
+    <button class="filter-btn active" onclick="filterStaffOrders('all',this)">All</button>
+    <button class="filter-btn" onclick="filterStaffOrders('pending',this)">Pending</button>
+    <button class="filter-btn" onclick="filterStaffOrders('preparing',this)">Preparing</button>
+    <button class="filter-btn" onclick="filterStaffOrders('ready',this)">Ready</button>
+  </div>
+
+  <div class="panel" style="padding:0;overflow:hidden">
+    <div class="table-wrap"><table>
+      <thead><tr><th>Token</th><th>Items Ordered</th><th>Total</th><th>Time</th><th>Status</th><th>Action</th></tr></thead>
+      <tbody id="staff-orders-body"></tbody>
+    </table></div>
+  </div>
+</div>
+
+</main>
+
+<footer>
+  <div class="footer-logo">CBite – Campus Bite</div>
+  <div>College Canteen Management System &nbsp;&middot;&nbsp; Built with Python + MongoDB</div>
+</footer>
+
+<div class="overlay" id="cart-overlay">
+  <div class="modal">
+    <div class="modal-title">Your Cart</div>
+    <div id="cart-modal-items"></div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeOverlay('cart-overlay')">Continue Shopping</button>
+      <button class="btn btn-primary" id="place-btn" onclick="placeOrder()">Place Order</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="confirm-overlay">
+  <div class="modal" style="text-align:center">
+    <div class="confirm-icon">
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><path d="M8 16L13 21L24 11" stroke="#1A7A3F" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="modal-title" style="text-align:center">Order Confirmed!</div>
+    <p style="color:var(--muted);margin-bottom:8px">Your token number is</p>
+    <div class="token-display" id="token-num">–</div>
+    <p style="color:var(--muted);font-size:.82rem;margin-top:6px">Please show this at the counter for pickup</p>
+    <div style="margin-top:28px"><button class="btn btn-primary" onclick="closeOverlay('confirm-overlay')">Done</button></div>
+  </div>
+</div>
+
+<div class="overlay" id="login-overlay">
+  <div class="modal" style="max-width:400px">
+    <div style="text-align:center;margin-bottom:24px">
+      <svg width="52" height="52" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="52" height="52" rx="14" fill="#FFF3EE"/>
+        <path d="M26 15C22.13 15 19 18.13 19 22C19 25.87 22.13 29 26 29C29.87 29 33 25.87 33 22C33 18.13 29.87 15 26 15Z" stroke="#C8410B" stroke-width="1.8"/>
+        <path d="M13 40C13 35.03 19.04 31 26 31C33 31 39 35 39 40" stroke="#C8410B" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="modal-title" style="text-align:center;margin-bottom:4px">Staff Portal Login</div>
+    <p style="color:var(--muted);text-align:center;font-size:.85rem;margin-bottom:22px">Select your role and enter the corresponding password</p>
+    <div class="form-group">
+      <label>Login As</label>
+      <select id="portal-role">
+        <option value="staff">Counter Staff</option>
+        <option value="admin">Admin</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="portal-pw" placeholder="Enter password" onkeydown="if(event.key==='Enter')doPortalLogin()"/>
+    </div>
+    <div id="portal-err" style="color:var(--red);font-size:.82rem;margin-bottom:12px;display:none">Incorrect password. Please try again.</div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeOverlay('login-overlay')">Cancel</button>
+      <button class="btn btn-primary" onclick="doPortalLogin()">Login</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="edit-overlay">
+  <div class="modal">
+    <div class="modal-title">Edit Menu Item</div>
+    <input type="hidden" id="e-id"/>
+    <div class="form-group"><label>Name</label><input id="e-name"/></div>
+    <div class="form-row">
+      <div class="form-group"><label>Category</label><select id="e-cat"><option>Meals</option><option>Snacks</option><option>Beverages</option><option>Desserts</option><option>Other</option></select></div>
+      <div class="form-group"><label>Price (Rs.)</label><input id="e-price" type="number" min="0" step="0.5"/></div>
+    </div>
+    <div class="form-group"><label>Image URL</label><input id="e-img" placeholder="https://..."/></div>
+    <div class="form-group"><label>Available</label><select id="e-avail"><option value="true">Yes</option><option value="false">No</option></select></div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeOverlay('edit-overlay')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveEdit()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = "";
+let cart = {}, role = "student", menuAll = [], curCat = "all", curOrderFilter = "all";
+
+let ttimer;
+function toast(msg, type="success"){
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.className = "toast toast-"+type+" show";
+  clearTimeout(ttimer); ttimer = setTimeout(()=>t.classList.remove("show"), 3500);
+}
+
+function showPage(id, el){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  if(el) el.classList.add("active");
+  if(id==="pg-home")   loadHome();
+  if(id==="pg-menu")   loadMenu();
+  if(id==="pg-orders") loadOrders();
+  if(id==="pg-admin")  { loadAdminMenu(); loadAdminOrders(); }
+  if(id==="pg-staff")  loadStaffOrders();
+}
+
+function openOverlay(id){ document.getElementById(id).classList.add("open"); }
+function closeOverlay(id){ document.getElementById(id).classList.remove("open"); }
+
+function openPortalLogin(){
+  document.getElementById("portal-pw").value="";
+  document.getElementById("portal-err").style.display="none";
+  openOverlay("login-overlay");
+}
+async function doPortalLogin(){
+  const selectedRole = document.getElementById("portal-role").value;
+  const pw = document.getElementById("portal-pw").value;
+  const endpoint = selectedRole === "admin" ? "/admin/login" : "/staff/login";
+  const r = await fetch(API+endpoint,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({password:pw})});
+  const d = await r.json();
+  if(d.success){
+    role = selectedRole;
+    closeOverlay("login-overlay");
+    const btn = document.getElementById("portal-btn");
+    btn.textContent = (role==="admin" ? "Admin" : "Staff") + " — Logout";
+    btn.classList.add("active-role");
+    btn.onclick = portalLogout;
+    document.getElementById("cart-btn").style.display = "none";
+    document.getElementById("admin-chip").style.display = role==="admin" ? "" : "none";
+    document.getElementById("staff-chip").style.display = role==="staff" ? "" : "none";
+    document.getElementById("tab-admin").style.display  = role==="admin" ? "" : "none";
+    document.getElementById("tab-staff").style.display  = role==="staff" ? "" : "none";
+    toast("Welcome, " + (role==="admin" ? "Admin" : "Counter Staff") + "!");
+    if(role==="admin")  { loadMenu(); showPage("pg-admin", document.getElementById("tab-admin")); }
+    if(role==="staff")  showPage("pg-staff", document.getElementById("tab-staff"));
+  } else {
+    document.getElementById("portal-err").style.display = "";
+  }
+}
+function portalLogout(){
+  role = "student";
+  const btn = document.getElementById("portal-btn");
+  btn.textContent = "Staff / Admin Login";
+  btn.classList.remove("active-role");
+  btn.onclick = openPortalLogin;
+  document.getElementById("tab-admin").style.display = "none";
+  document.getElementById("tab-staff").style.display = "none";
+  document.getElementById("admin-chip").style.display = "none";
+  document.getElementById("staff-chip").style.display = "none";
+  loadMenu();
+  showPage("pg-home", document.querySelectorAll(".tab")[0]);
+  toast("Logged out","info");
+}
+
+async function loadMenu(){
+  const r = await fetch(API+"/menu?role="+role);
+  const d = await r.json();
+  menuAll = d.data||[];
+  buildCatFilters(menuAll);
+  renderMenuGrid(menuAll, "menu-grid", curCat, true);
+}
+function buildCatFilters(items){
+  const cats = ["all",...new Set(items.map(i=>i.category))];
+  document.getElementById("cat-filters").innerHTML = cats.map(c=>
+    `<button class="filter-btn${c===curCat?" active":""}" onclick="filterCat('${c}',this)">${c==="all"?"All Items":c}</button>`
+  ).join("");
+}
+function filterCat(cat, el){
+  curCat = cat;
+  document.querySelectorAll("#cat-filters .filter-btn").forEach(b=>b.classList.remove("active"));
+  el.classList.add("active");
+  renderMenuGrid(menuAll,"menu-grid",cat,true);
+}
+function renderMenuGrid(items, gridId, cat, showCart){
+  const filtered = cat==="all" ? items : items.filter(i=>i.category===cat);
+  const g = document.getElementById(gridId);
+  const isStudent = role==="student";
+  if(isStudent && showCart){ document.getElementById("cart-btn").style.display="flex"; }
+  if(!filtered.length){
+    g.innerHTML = `<div class="empty"><svg class="empty-icon" width="48" height="48" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" stroke="#D4D4CE" stroke-width="2"/><path d="M16 24H32M24 16V32" stroke="#D4D4CE" stroke-width="2" stroke-linecap="round"/></svg><h3>No items found</h3><p>Try a different category</p></div>`;
+    return;
+  }
+  g.innerHTML = filtered.map(item=>`
+<div class="menu-card">
+  ${item.image
+    ? `<img class="menu-card-img" src="${item.image}" alt="${item.name}" loading="lazy" onerror="this.style.display='none'">`
+    : `<div class="menu-card-img fallback"><svg width="48" height="48" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" stroke="#D4D4CE" stroke-width="2"/><path d="M16 30C16 30 18 26 24 26C30 26 32 30 32 30" stroke="#D4D4CE" stroke-width="1.5" stroke-linecap="round"/><circle cx="19" cy="21" r="2" fill="#D4D4CE"/><circle cx="29" cy="21" r="2" fill="#D4D4CE"/></svg></div>`
+  }
+  <div class="menu-card-body">
+    <div class="menu-card-cat">${item.category}</div>
+    <div class="menu-card-name">${item.name}</div>
+    <div class="menu-card-footer">
+      <div class="menu-card-price">Rs.${item.price.toFixed(2)} <span>/ serving</span></div>
+      ${isStudent && item.available
+        ? (cart[item._id]
+            ? `<div class="qty-ctrl">
+                <button class="qty-btn" onclick="chQty('${item._id}',-1)">&#8722;</button>
+                <span id="qty-${item._id}" style="min-width:20px;text-align:center;font-weight:600">${cart[item._id].quantity}</span>
+                <button class="qty-btn" onclick="chQty('${item._id}',1)">+</button>
+               </div>`
+            : `<button class="btn-add" onclick="addCart('${item._id}','${item.name.replace(/'/g,"\\'")}',${item.price})">Add</button>`)
+        : `<span class="badge ${item.available?"badge-avail":"badge-unavail"}">${item.available?"Available":"Unavailable"}</span>`
+      }
+    </div>
+  </div>
+</div>`).join("");
+}
+
+function addCart(id,name,price){ cart[id]={name,price,quantity:1}; updateCartBadge(); refreshMenuGrid(); toast(name+" added to cart"); }
+function chQty(id,d){ if(!cart[id])return; cart[id].quantity+=d; if(cart[id].quantity<=0)delete cart[id]; updateCartBadge(); refreshMenuGrid(); }
+function refreshMenuGrid(){ renderMenuGrid(menuAll,"menu-grid",curCat,true); }
+function updateCartBadge(){ document.getElementById("cart-badge").textContent=Object.keys(cart).length; }
+function openCart(){
+  const keys=Object.keys(cart); const pb=document.getElementById("place-btn");
+  const el=document.getElementById("cart-modal-items");
+  if(!keys.length){
+    el.innerHTML=`<div class="empty"><h3>Your cart is empty</h3><p>Browse the menu and add items</p></div>`;
+    pb.disabled=true;
+  } else {
+    let total=0;
+    el.innerHTML=keys.map(id=>{const it=cart[id];const sub=it.price*it.quantity;total+=sub;return`
+<div class="cart-line">
+  <div><div class="cart-item-name">${it.name}</div><div class="cart-item-sub">Rs.${it.price.toFixed(2)} &times; ${it.quantity}</div></div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <span style="font-weight:700">Rs.${sub.toFixed(2)}</span>
+    <div class="qty-ctrl">
+      <button class="qty-btn" onclick="chQty('${id}',-1);openCart()">&#8722;</button>
+      <span>${it.quantity}</span>
+      <button class="qty-btn" onclick="chQty('${id}',1);openCart()">+</button>
+    </div>
+  </div>
+</div>`;}).join("")+`<div class="cart-total-row"><span>Order Total</span><span>Rs.${total.toFixed(2)}</span></div>`;
+    pb.disabled=false;
+  }
+  openOverlay("cart-overlay");
+}
+async function placeOrder(){
+  const items=Object.entries(cart).map(([item_id,v])=>({item_id,quantity:v.quantity}));
+  const r=await fetch(API+"/order",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({items})});
+  const d=await r.json();
+  if(!d.success){toast(d.error||(d.errors||[]).join(", "),"error");return;}
+  cart={}; updateCartBadge(); closeOverlay("cart-overlay");
+  document.getElementById("token-num").textContent="#"+d.data.token_number;
+  openOverlay("confirm-overlay");
+  refreshMenuGrid();
+}
+
+async function loadHome(){
+  const r=await fetch(API+"/menu?role=student");
+  const d=await r.json();
+  const items=d.data||[];
+  document.getElementById("s-items").textContent=items.length;
+  document.getElementById("s-cats").textContent=new Set(items.map(i=>i.category)).size;
+  document.getElementById("s-avail").textContent=items.filter(i=>i.available).length;
+  const ro=await fetch(API+"/orders"); const od=await ro.json();
+  document.getElementById("s-orders").textContent=(od.data||[]).length;
+  const featured=items.filter(i=>i.available).slice(0,4);
+  renderMenuGrid(featured,"featured-grid","all",true);
+}
+
+async function loadOrders(){
+  const url=curOrderFilter==="all"?API+"/orders":API+"/orders?status="+curOrderFilter;
+  const r=await fetch(url); const d=await r.json();
+  renderOrders(d.data||[]);
+}
+function filterOrders(s,el){
+  curOrderFilter=s;
+  document.querySelectorAll("#pg-orders .filter-btn").forEach(b=>b.classList.remove("active"));
+  el.classList.add("active"); loadOrders();
+}
+function renderOrders(orders){
+  const el=document.getElementById("orders-list");
+  const FLOW={pending:"Pending",preparing:"Preparing",ready:"Ready for Pickup"};
+  if(!orders.length){
+    el.innerHTML=`<div class="empty"><svg class="empty-icon" width="48" height="48" viewBox="0 0 48 48" fill="none"><rect x="10" y="8" width="28" height="34" rx="4" stroke="#D4D4CE" stroke-width="2"/><path d="M18 18H30M18 24H30M18 30H24" stroke="#D4D4CE" stroke-width="1.5" stroke-linecap="round"/></svg><h3>No orders found</h3><p>Place an order from the menu</p></div>`;
+    return;
+  }
+  el.innerHTML=orders.map(o=>`
+<div class="order-card">
+  <div class="order-card-top">
+    <div class="token-num">Token #${o.token_number||"–"} &nbsp;<span style="font-size:.75rem;color:var(--muted);font-family:var(--font-body);font-weight:400">${fmtDate(o.created_at)}</span></div>
+    <span class="badge badge-${o.status}">${FLOW[o.status]||o.status}</span>
+  </div>
+  <div class="order-items-list">${(o.items||[]).map(i=>`${i.name} &times;${i.quantity}`).join("&nbsp;&nbsp;·&nbsp;&nbsp;")}</div>
+  <div class="order-card-bottom">
+    <div class="order-total">Rs.${o.total_price.toFixed(2)}</div>
+    ${o.status==="pending"?`<button class="btn btn-danger btn-sm" onclick="cancelOrder('${o._id}')">Cancel Order</button>`:""}
+  </div>
+</div>`).join("");
+}
+async function cancelOrder(id){
+  if(!confirm("Cancel this order?"))return;
+  const r=await fetch(API+"/order/"+id,{method:"DELETE"});
+  const d=await r.json();
+  if(d.success){toast("Order cancelled");loadOrders();}else toast(d.error,"error");
+}
+
+async function loadAdminMenu(){
+  const r=await fetch(API+"/menu?role=admin"); const d=await r.json();
+  const tb=document.getElementById("admin-menu-body");
+  tb.innerHTML=(d.data||[]).map(item=>`<tr>
+    <td style="font-weight:600">${item.name}</td>
+    <td>${item.category}</td>
+    <td>Rs.${item.price.toFixed(2)}</td>
+    <td><span class="badge badge-${item.available?"avail":"unavail"}">${item.available?"Active":"Hidden"}</span></td>
+    <td><div class="action-row">
+      <button class="btn btn-outline btn-sm" onclick="openEdit('${item._id}','${item.name.replace(/'/g,"\\'")}','${item.category}',${item.price},'${item.image||""}',${item.available})">Edit</button>
+      <button class="btn btn-danger btn-sm" onclick="delItem('${item._id}')">Delete</button>
+    </div></td>
+  </tr>`).join("");
+}
+async function addItem(){
+  const name=(document.getElementById("a-name").value||"").trim();
+  const cat=document.getElementById("a-cat").value;
+  const price=parseFloat(document.getElementById("a-price").value);
+  const img=document.getElementById("a-img").value.trim();
+  const avail=document.getElementById("a-avail").value==="true";
+  if(!name||isNaN(price)){toast("Name and price are required","error");return;}
+  const r=await fetch(API+"/menu",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name,category:cat,price,image:img,available:avail})});
+  const d=await r.json();
+  if(d.success){toast("Item added");loadAdminMenu();loadMenu();document.getElementById("a-name").value="";document.getElementById("a-price").value="";}
+  else toast(d.error,"error");
+}
+async function delItem(id){
+  if(!confirm("Delete this menu item permanently?"))return;
+  const r=await fetch(API+"/menu/"+id,{method:"DELETE"});
+  const d=await r.json();
+  if(d.success){toast("Item deleted");loadAdminMenu();loadMenu();}else toast(d.error,"error");
+}
+function openEdit(id,name,cat,price,img,avail){
+  document.getElementById("e-id").value=id;
+  document.getElementById("e-name").value=name;
+  document.getElementById("e-cat").value=cat;
+  document.getElementById("e-price").value=price;
+  document.getElementById("e-img").value=img;
+  document.getElementById("e-avail").value=avail?"true":"false";
+  openOverlay("edit-overlay");
+}
+async function saveEdit(){
+  const id=document.getElementById("e-id").value;
+  const body={name:document.getElementById("e-name").value.trim(),category:document.getElementById("e-cat").value,
+    price:parseFloat(document.getElementById("e-price").value),image:document.getElementById("e-img").value.trim(),
+    available:document.getElementById("e-avail").value==="true"};
+  const r=await fetch(API+"/menu/"+id,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+  const d=await r.json();
+  if(d.success){toast("Saved!");closeOverlay("edit-overlay");loadAdminMenu();loadMenu();}else toast(d.error,"error");
+}
+
+async function loadAdminOrders(){
+  const r=await fetch(API+"/orders"); const d=await r.json();
+  const NEXT={pending:"preparing",preparing:"ready",ready:null};
+  const LABEL={pending:"Mark Preparing",preparing:"Mark Ready"};
+  const tb=document.getElementById("admin-orders-body");
+  tb.innerHTML=(d.data||[]).map(o=>`<tr>
+    <td><b>#${o.token_number||"–"}</b></td>
+    <td style="font-size:.82rem;max-width:200px">${(o.items||[]).map(i=>i.name+" x"+i.quantity).join(", ")}</td>
+    <td>Rs.${o.total_price.toFixed(2)}</td>
+    <td><span class="badge badge-${o.status}">${o.status}</span></td>
+    <td><div class="action-row">
+      ${NEXT[o.status]?`<button class="btn btn-success btn-sm" onclick="advanceStatus('${o._id}','${NEXT[o.status]}')">${LABEL[o.status]}</button>`:`<span style="color:var(--muted);font-size:.78rem">Completed</span>`}
+      <button class="btn btn-danger btn-sm" style="margin-left:8px" onclick="adminDeleteOrder('${o._id}')">Delete</button>
+    </div></td>
+  </tr>`).join("");
+}
+async function advanceStatus(id,status){
+  const r=await fetch(API+"/order/"+id+"/status",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({status})});
+  const d=await r.json();
+  if(d.success){toast("Status updated","info");loadAdminOrders();}else toast(d.error,"error");
+}
+async function adminCancel(id){
+  if(!confirm("Cancel this order?"))return;
+  const r=await fetch(API+"/order/"+id,{method:"DELETE"});
+  const d=await r.json();
+  if(d.success){toast("Order cancelled");loadAdminOrders();}else toast(d.error,"error");
+}
+async function adminDeleteOrder(id){
+  if(!confirm("Permanently delete this order? This cannot be undone."))return;
+  const r=await fetch(API+"/order/"+id+"?force=1",{method:"DELETE"});
+  const d=await r.json();
+  if(d.success){toast("Order deleted");loadAdminOrders();}else toast(d.error,"error");
+}
+
+let curStaffFilter = "all";
+async function loadStaffOrders(){
+  const url = curStaffFilter==="all" ? API+"/orders" : API+"/orders?status="+curStaffFilter;
+  const r = await fetch(url); const d = await r.json();
+  const orders = d.data||[];
+  const all = (await (await fetch(API+"/orders")).json()).data||[];
+  document.getElementById("st-pending").textContent   = all.filter(o=>o.status==="pending").length;
+  document.getElementById("st-preparing").textContent = all.filter(o=>o.status==="preparing").length;
+  document.getElementById("st-ready").textContent     = all.filter(o=>o.status==="ready").length;
+  document.getElementById("st-total").textContent     = all.length;
+  renderStaffOrders(orders);
+}
+function filterStaffOrders(s, el){
+  curStaffFilter = s;
+  document.querySelectorAll("#pg-staff .filter-btn").forEach(b=>b.classList.remove("active"));
+  el.classList.add("active");
+  loadStaffOrders();
+}
+function renderStaffOrders(orders){
+  const NEXT  = {pending:"preparing", preparing:"ready", ready:null};
+  const LABEL = {pending:"Mark Preparing", preparing:"Mark Ready"};
+  const NEXT_COLOR = {pending:"background:var(--yellow-bg);color:var(--yellow);border-color:#FDE68A", preparing:"background:var(--green-bg);color:var(--green);border-color:#BBF7D0"};
+  const tb = document.getElementById("staff-orders-body");
+  if(!orders.length){
+    tb.innerHTML=`<tr><td colspan="6" style="text-align:center;padding:48px;color:var(--muted)">No orders in this category</td></tr>`;
+    return;
+  }
+  tb.innerHTML = orders.map(o=>`<tr>
+    <td><b style="font-size:1rem">#${o.token_number||"–"}</b></td>
+    <td style="font-size:.83rem;max-width:220px;line-height:1.6">${(o.items||[]).map(i=>`<span style="display:inline-block;background:#F5F4EF;border-radius:4px;padding:1px 7px;margin:1px 2px;font-size:.78rem">${i.name} &times;${i.quantity}</span>`).join("")}</td>
+    <td style="font-weight:600">Rs.${o.total_price.toFixed(2)}</td>
+    <td style="font-size:.8rem;color:var(--muted)">${fmtDate(o.created_at)}</td>
+    <td><span class="badge badge-${o.status}">${o.status}</span></td>
+    <td>
+      ${NEXT[o.status]
+        ? `<button class="btn btn-sm" style="${NEXT_COLOR[o.status]};border:1.5px solid" onclick="staffAdvance('${o._id}','${NEXT[o.status]}')">${LABEL[o.status]}</button>`
+        : `<span style="font-size:.78rem;color:var(--green);font-weight:600">&#10003; Served</span>`
+      }
+    </td>
+  </tr>`).join("");
+}
+async function staffAdvance(id, status){
+  const r = await fetch(API+"/order/"+id+"/status",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({status})});
+  const d = await r.json();
+  if(d.success){ toast("Order marked: "+status,"info"); loadStaffOrders(); }
+  else toast(d.error,"error");
+}
+function fmtDate(iso){
+  try{return new Date(iso).toLocaleString("en-IN",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"});}catch{return "";}
+}
+
+loadHome();
+</script>
+</body>
+</html>
