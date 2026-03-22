@@ -1,48 +1,56 @@
 # CBite – Campus Bite
 
-A full-stack college canteen management system built with Python (Flask) and MongoDB. Students can browse the menu, place orders, and track order status live. Admin staff can manage the menu and update order statuses through a dedicated panel.
+A full-stack college canteen management system built with Python (Flask) and MongoDB. Students can browse the menu, place orders, and track their order status in real time. Admin staff can manage the entire menu and handle all incoming orders through a secure panel.
 
 ---
 
 ## About
 
-CBite digitizes the college canteen experience — no queues, no confusion. It replaces the traditional paper-based or verbal ordering system with a clean web interface where students can place orders from any device and get a token number instantly. The admin panel gives canteen staff full control over the menu and all incoming orders.
+CBite digitizes the college canteen experience — no queues, no confusion. It replaces the traditional paper-based or verbal ordering system with a clean, professional web interface where students can place orders from any device and receive a token number instantly. The admin panel gives canteen staff full control over the menu and all incoming orders.
 
-This project demonstrates real-world backend design with full CRUD operations using MongoDB and Python, making it suitable as a college mini project.
+Built as a college mini project, CBite demonstrates real-world backend design with full CRUD operations using MongoDB and Python Flask.
 
 ---
 
 ## Tech Stack
 
-| Layer     | Technology                        |
-|-----------|-----------------------------------|
-| Backend   | Python 3.x + Flask                |
-| Database  | MongoDB                           |
-| Driver    | PyMongo                           |
-| Frontend  | HTML + CSS + Vanilla JavaScript   |
-| Fonts     | Google Fonts (Playfair Display, Outfit) |
-| Images    | Unsplash (CDN, no download needed) |
+| Layer      | Technology                                      |
+|------------|-------------------------------------------------|
+| Backend    | Python 3.x + Flask                              |
+| Database   | MongoDB                                         |
+| Driver     | PyMongo                                         |
+| Frontend   | HTML5 + CSS3 + Vanilla JavaScript               |
+| Fonts      | Google Fonts — Playfair Display + Outfit        |
+| Images     | Unsplash CDN (no download needed, loads online) |
 
 ---
 
-## Features
+## User Roles
 
-### Student
-- Browse full menu with food images, prices, and categories
-- Filter menu by category (Meals, Snacks, Beverages, Desserts)
-- Add items to cart, adjust quantities
-- Place order — auto token number assigned
-- Track live order status (Pending / Preparing / Ready)
-- Cancel order (only if still Pending)
+CBite has three roles — Student, Admin, and Staff.
 
-### Admin (password protected)
-- Secure login with password
-- Add new menu items with image, price, category
-- Edit existing items (name, price, availability, image)
-- Delete menu items
-- View all orders in a table
+### Student (default, no login required)
+- Browse the full menu with food images, prices, and categories
+- Filter menu by category: Meals, Snacks, Beverages, Desserts
+- Add items to cart and adjust quantities
+- Place an order — a unique token number is auto-assigned
+- View live order status: Pending / Preparing / Ready for Pickup
+- Cancel an order (only allowed if status is still Pending)
+
+### Admin (login required — password protected)
+- Secure login via Admin Login button (top right of site)
+- Add new menu items with name, price, category, image URL, availability
+- Edit existing items — update any field
+- Delete menu items permanently
+- View all orders in a full table
 - Advance order status: Pending → Preparing → Ready
-- Force delete any order regardless of status
+- Force delete any order regardless of its status
+
+### Staff (backend only — API accessible)
+- Separate login endpoint available at `POST /staff/login`
+- Password protected independently from admin
+- Intended for counter staff to authenticate via API
+- Frontend UI panel for staff is not yet implemented
 
 ---
 
@@ -50,19 +58,21 @@ This project demonstrates real-world backend design with full CRUD operations us
 
 ```
 cbite/
-├── app.py          ← Full backend (Flask routes + MongoDB logic)
-├── index.html      ← Complete frontend UI
-└── requirements.txt
+├── app.py           ← Complete backend: all Flask routes + MongoDB logic + seeding
+├── index.html       ← Complete frontend: UI, styles, and all JavaScript
+└── requirements.txt ← Python dependencies (3 packages)
 ```
+
+> `index.html` lives in the same folder as `app.py` — no separate templates folder needed.
 
 ---
 
-## Database Design (MongoDB)
+## Database Design (MongoDB — 3 Collections)
 
-### `menu` collection
+### `menu`
 ```json
 {
-  "_id": ObjectId,
+  "_id": "ObjectId",
   "name": "Masala Dosa",
   "price": 45.0,
   "category": "Snacks",
@@ -71,13 +81,13 @@ cbite/
 }
 ```
 
-### `orders` collection
+### `orders`
 ```json
 {
-  "_id": ObjectId,
+  "_id": "ObjectId",
   "items": [
     {
-      "item_id": ObjectId,
+      "item_id": "ObjectId",
       "name": "Masala Dosa",
       "quantity": 2,
       "price": 45.0,
@@ -86,15 +96,15 @@ cbite/
   ],
   "total_price": 90.0,
   "status": "pending",
-  "created_at": ISODate
+  "created_at": "ISODate"
 }
 ```
 
-### `queue` collection
+### `queue`
 ```json
 {
-  "_id": ObjectId,
-  "order_id": ObjectId,
+  "_id": "ObjectId",
+  "order_id": "ObjectId",
   "token_number": 1,
   "status": "pending"
 }
@@ -106,32 +116,33 @@ cbite/
 
 ### Menu
 
-| Method   | Endpoint        | Description                          |
-|----------|----------------|--------------------------------------|
-| `GET`    | `/menu`         | List items (student: available only; admin: all) |
-| `GET`    | `/menu/<id>`    | Get single item                      |
-| `POST`   | `/menu`         | Add new item                         |
-| `PUT`    | `/menu/<id>`    | Update item (price, name, availability, image) |
-| `DELETE` | `/menu/<id>`    | Delete item                          |
+| Method   | Endpoint       | Description                                          |
+|----------|----------------|------------------------------------------------------|
+| `GET`    | `/menu`        | List items (`?role=admin` shows hidden items too)    |
+| `GET`    | `/menu/<id>`   | Get a single menu item by ID                         |
+| `POST`   | `/menu`        | Add a new menu item                                  |
+| `PUT`    | `/menu/<id>`   | Update item — name, price, category, image, availability |
+| `DELETE` | `/menu/<id>`   | Permanently delete a menu item                       |
 
 ### Orders
 
-| Method   | Endpoint                  | Description                          |
-|----------|--------------------------|--------------------------------------|
-| `POST`   | `/order`                  | Place a new order                    |
-| `GET`    | `/orders`                 | List all orders (filter by `?status=`) |
-| `GET`    | `/order/<id>`             | Get single order with token info     |
-| `PUT`    | `/order/<id>/status`      | Advance status (pending→preparing→ready) |
-| `DELETE` | `/order/<id>`             | Cancel order (pending only)          |
-| `DELETE` | `/order/<id>?force=1`     | Force delete any order (admin)       |
-| `GET`    | `/queue`                  | View full token queue                |
+| Method   | Endpoint                    | Description                                        |
+|----------|-----------------------------|----------------------------------------------------|
+| `POST`   | `/order`                    | Place a new order (auto-calculates total + token)  |
+| `GET`    | `/orders`                   | List all orders (filter with `?status=pending` etc)|
+| `GET`    | `/order/<id>`               | Get a single order with its token number           |
+| `PUT`    | `/order/<id>/status`        | Advance status: pending → preparing → ready        |
+| `DELETE` | `/order/<id>`               | Cancel order (only if status is pending)           |
+| `DELETE` | `/order/<id>?force=1`       | Force delete any order regardless of status        |
+| `GET`    | `/queue`                    | View full token queue sorted by token number       |
 
 ### Auth
 
-| Method | Endpoint        | Description        |
-|--------|-----------------|--------------------|
-| `POST` | `/admin/login`  | Admin login        |
-| `GET`  | `/health`       | Server health check |
+| Method | Endpoint        | Description                          |
+|--------|-----------------|--------------------------------------|
+| `POST` | `/admin/login`  | Admin login — returns success/failure |
+| `POST` | `/staff/login`  | Staff login — returns success/failure |
+| `GET`  | `/health`       | Check server and DB connection status |
 
 ---
 
@@ -141,7 +152,8 @@ cbite/
 - Python 3.8 or higher
 - MongoDB installed and running locally
 
-### Step 1 — Clone or download the project
+### Step 1 — Set up the project folder
+
 Place all three files in one folder:
 ```
 cbite/
@@ -150,7 +162,7 @@ cbite/
 └── requirements.txt
 ```
 
-### Step 2 — Install dependencies
+### Step 2 — Install Python dependencies
 ```bash
 pip install -r requirements.txt
 ```
@@ -164,7 +176,16 @@ mongod
 ```bash
 python app.py
 ```
-On first run, 14 sample menu items are seeded automatically into MongoDB.
+
+On the very first run, 14 sample menu items are automatically seeded into MongoDB. You will see this in the terminal:
+```
+[CBite] Seeded 14 menu items.
+==================================================
+  CBite – Campus Bite  |  http://localhost:5000
+  Admin password: cadmin2026
+  Staff password: cstaff2026
+==================================================
+```
 
 ### Step 5 — Open in browser
 ```
@@ -175,48 +196,68 @@ http://localhost:5000
 
 ## Credentials
 
-| Role  | Password      |
-|-------|---------------|
-| Admin | `cadmin2026`  |
+| Role  | Password      | Access                              |
+|-------|---------------|-------------------------------------|
+| Admin | `cadmin2026`  | Full menu CRUD + order management   |
+| Staff | `cstaff2026`  | API-level access via `/staff/login` |
 
-Click **"Admin Login"** in the top-right corner of the site to access the admin panel.
+To access the Admin panel on the website, click **"Admin Login"** in the top-right corner and enter the admin password.
+
+---
+
+## Seed Data (Auto-loaded on first run)
+
+14 menu items across 4 categories are inserted automatically:
+
+| Category  | Items                                              |
+|-----------|----------------------------------------------------|
+| Meals     | Veg Thali, Non-Veg Thali, Egg Rice, Chapati        |
+| Snacks    | Masala Dosa, Idli, Samosa, Veg Puff                |
+| Beverages | Masala Chai, Cold Coffee, Lassi, Fresh Lime Soda   |
+| Desserts  | Gulab Jamun, Ice Cream Cup                         |
+
+> Fresh Lime Soda is seeded as unavailable by default to demonstrate the hidden/unavailable feature.
 
 ---
 
 ## Business Rules
 
-- Total price is **auto-calculated** during order creation
-- Item **availability is validated** before adding to order
-- Token numbers are **auto-incremented** per order
-- Order status flow is **strictly one-way**: `pending → preparing → ready`
+- Order total is **auto-calculated** at the time of placement
+- Item **availability is checked** before adding to an order — unavailable items are rejected
+- Token numbers are **auto-incremented** for every new order
+- Order status moves **strictly one way**: `pending → preparing → ready`
 - Students can only cancel orders that are still `pending`
-- Admin can force-delete any order regardless of status
-- Duplicate menu item names are rejected
-
-## PyMongo Operations Used
-
-| Operation      | Usage                                      |
-|----------------|--------------------------------------------|
-| `insert_one`   | Add menu item, place order, create token   |
-| `insert_many`  | Seed initial menu data                     |
-| `find_one`     | Fetch item/order by ID, validate existence |
-| `find`         | List menu, orders, queue                   |
-| `update_one`   | Edit menu item, advance order status       |
-| `delete_one`   | Remove menu item, cancel/delete order      |
-| `create_index` | Indexes on status, created_at, token_number |
+- Admin can **force delete** any order at any status using `?force=1`
+- Menu item names are **case-insensitively unique** — duplicate names are rejected
 
 ---
 
-## Screenshots
+## PyMongo Operations Used
 
-> Home page with live stats, featured items with food images, hero section.
-> Menu page with category filters and Add to Cart controls.
-> Cart modal with quantity controls and total.
-> Order confirmed modal showing token number.
-> Admin panel with full menu table (edit/delete) and orders table (advance/delete).
+| Operation       | Used For                                        |
+|-----------------|-------------------------------------------------|
+| `insert_one`    | Add menu item, place order, create queue entry  |
+| `insert_many`   | Seed initial 14 menu items on first run         |
+| `find_one`      | Fetch item/order by ID, validate before acting  |
+| `find`          | List all menu items, orders, queue entries      |
+| `update_one`    | Edit menu item fields, advance order status     |
+| `delete_one`    | Remove menu item, cancel or delete order        |
+| `count_documents` | Check if seed data already exists            |
+| `create_index`  | Indexes on status, created_at, token_number     |
+
+---
+
+## MongoDB Indexes
+
+```python
+db["orders"].create_index([("status",       ASCENDING)])
+db["orders"].create_index([("created_at",   DESCENDING)])
+db["menu"].create_index([("category",       ASCENDING)])
+db["queue"].create_index([("token_number",  ASCENDING)], unique=True)
+```
 
 ---
 
 ## License
 
-This project is built for educational purposes as a college mini project.
+Built for educational purposes as a college mini project.
